@@ -1,107 +1,16 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import "./style.css";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Autocomplete, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-
-type Booking = {
-	vehicle: {
-		number: string;
-		driver_name: string;
-	};
-	name: string;
-	date: string;
-	plant: "Brahmapuram" | "Willington";
-	booking_id: string;
-	id: string;
-};
-
-const columns: GridColDef<Booking>[] = [
-	{
-		field: "date",
-		headerName: "Date",
-		flex: 1,
-		headerClassName: "list_table_header",
-		resizable: false,
-		disableColumnMenu: true,
-	},
-	{
-		field: "booking_id",
-		headerName: "Booking ID",
-		flex: 1,
-		headerClassName: "list_table_header",
-		resizable: false,
-		disableColumnMenu: true,
-	},
-	{
-		field: "name",
-		headerName: "Name",
-		flex: 1,
-		headerClassName: "list_table_header",
-		resizable: false,
-		disableColumnMenu: true,
-	},
-	{
-		field: "vehicle",
-		headerName: "Vehicle Number",
-		flex: 1,
-		headerClassName: "list_table_header",
-		resizable: false,
-		disableColumnMenu: true,
-		valueGetter: (value, row) => row.vehicle.number,
-	},
-	{
-		field: "status",
-		headerName: "Status",
-		flex: 1,
-		headerClassName: "list_table_header",
-		resizable: false,
-		disableColumnMenu: true,
-		renderCell: value => {
-			const completed = new Date(value.row.date).getTime() > new Date().getTime();
-			return (
-				<div className="status_container">
-					<div className={"status" + (completed ? "" : " pending")}>
-						{completed ? "Completed" : "Pending"}
-					</div>
-				</div>
-			);
-		},
-	},
-];
-
-const keys = [
-	{
-		label: "Name",
-		value: "name",
-	},
-	{
-		label: "Booking ID",
-		value: "booking_id",
-	},
-	{
-		label: "Vehicle number",
-		value: "vehicle",
-	},
-];
-
-const plants = [
-	{
-		label: "Willington",
-	},
-	{
-		label: "Brahmapuram",
-	},
-] as const;
-
-const vehicles = [
-	{
-		number: "KL-23423",
-		driver: "asdasd",
-	},
-];
+import { IoMdAdd } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+import { Booking } from "./types";
+import { columns } from "./data";
+import { keys, plants, vehicles } from "../../constants";
+import { enqueueSnackbar } from "notistack";
 
 const BookingList = () => {
 	const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
@@ -114,21 +23,21 @@ const BookingList = () => {
 		vehicle: null as unknown as (typeof vehicles)[number],
 	});
 
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		const getBookings = async () => {
 			try {
 				setIsLoading(true);
 				const { data } = await axios.get("http://127.0.0.1:8000/booking", {
-					params: {
-						date: date.format("DD/MM/YYYY"),
-					},
+					params: { date: date.format("DD/MM/YYYY") },
 				});
 				const _bookings: typeof bookings = { Brahmapuram: [], Willington: [] };
 				const bookingsData = JSON.parse(data?.data || []) as Booking[];
-				bookingsData.map(ele => _bookings?.[ele?.plant]?.push({ ...ele, id: ele.booking_id }));
+				bookingsData.map(ele => _bookings?.[ele?.plant]?.push({ ...ele, id: ele.vehicle.number }));
 				setBookings(_bookings);
-			} catch (e) {
-				console.log(e);
+			} catch (e: any) {
+				enqueueSnackbar(e?.response?.data?.message || e?.toString?.(), { variant: "error" });
 			} finally {
 				setIsLoading(false);
 			}
@@ -170,7 +79,9 @@ const BookingList = () => {
 							value={filters.key}
 						>
 							{keys.map(k => (
-								<MenuItem value={k.value}>{k.label}</MenuItem>
+								<MenuItem value={k.value} key={k.value}>
+									{k.label}
+								</MenuItem>
 							))}
 						</Select>
 					</FormControl>
@@ -198,12 +109,17 @@ const BookingList = () => {
 						onChange={e => setFilters(ps => ({ ...ps, query: e.target.value }))}
 					/>
 				)}
-				{/* <Button startIcon={<IoSearch />} variant="contained" size="small">
-					Search
-				</Button> */}
+				<Button
+					startIcon={<IoMdAdd />}
+					variant="contained"
+					size="small"
+					onClick={() => navigate("/create")}
+				>
+					Add new booking
+				</Button>
 			</div>
 			{plants.map(p => (
-				<div className="list_plant">
+				<div className="list_plant" key={p.label}>
 					<h2>{p.label}</h2>
 					<DataGrid
 						rows={filteredBookings[p.label]}

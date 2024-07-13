@@ -1,0 +1,32 @@
+.create_container {
+	background-color: #171717;
+	min-height: 100dvh;
+	padding: 2rem;
+	width: 100%;
+}
+
+.create_container .title {
+	color: white;
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.create_form {
+	display: grid;
+	max-width: 50rem;
+	background-color: #242424;
+	border-radius: 0.5rem;
+	padding: 2rem;
+	margin-inline: auto;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem 1rem;
+}
+
+.logo {
+	grid-column: span 2;
+
+	img {
+		width: 100%;
+		/* mix-blend-mode: multiply; */
+	}
+}
