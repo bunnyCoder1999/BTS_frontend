@@ -88,3 +88,17 @@
 .status.pending::before {
 	background-color: rgba(175, 86, 12, 1);
 }
+
+@media (width<800px) {
+	.list_container {
+		grid-template-columns: 1fr;
+	}
+	.list_header {
+		grid-column: span 1;
+		flex-direction: column;
+		> * {
+			width: 100%;
+			max-width: 100%;
+		}
+	}
+}
