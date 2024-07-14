@@ -13,11 +13,7 @@
 	grid-column: span 2;
 	display: flex;
 	gap: 1rem;
-}
-
-.list_header button {
-	height: 2.5rem !important;
-	padding-inline: 1.5rem;
+	align-items: flex-start;
 }
 
 .list_plant {

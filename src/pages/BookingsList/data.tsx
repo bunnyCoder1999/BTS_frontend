@@ -1,5 +1,6 @@
 import { GridColDef } from "@mui/x-data-grid";
 import { Booking } from "./types";
+import dayjs from "dayjs";
 
 export const columns: GridColDef<Booking>[] = [
 	{
@@ -9,6 +10,7 @@ export const columns: GridColDef<Booking>[] = [
 		headerClassName: "list_table_header",
 		resizable: false,
 		disableColumnMenu: true,
+		valueGetter: (value, row) => dayjs(row.date).format("DD/MM/YYYY"),
 	},
 	{
 		field: "booking_id",
@@ -43,7 +45,7 @@ export const columns: GridColDef<Booking>[] = [
 		resizable: false,
 		disableColumnMenu: true,
 		renderCell: value => {
-			const completed = new Date(value.row.date).getTime() > new Date().getTime();
+			const completed = dayjs(value.row.date).isBefore(dayjs());
 			return (
 				<div className="status_container">
 					<div className={"status" + (completed ? "" : " pending")}>

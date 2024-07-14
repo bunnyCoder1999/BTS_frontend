@@ -6,8 +6,8 @@ import { FormEventHandler, useState } from "react";
 import { plants, vehicles } from "../../constants";
 import Logo from "../../assets/logo.jpg";
 import BTS from "../../assets/bts.webp";
-import axios from "axios";
-import { enqueueSnackbar } from "notistack";
+import { createBooking } from "../../services";
+
 const CreateBooking = () => {
 	const [date, setDate] = useState(dayjs());
 	const [name, setName] = useState("");
@@ -17,18 +17,13 @@ const CreateBooking = () => {
 
 	const handleCreateBooking: FormEventHandler<HTMLFormElement> = async e => {
 		e.preventDefault();
-		try {
-			const { data } = await axios.post("http://127.0.0.1:8000/booking/create", {
-				name,
-				vehicle,
-				plant,
-				booking_id: bookingId,
-				date: date.format("DD/MM/YYYY"),
-			});
-			enqueueSnackbar(data.message || "Success");
-		} catch (e: any) {
-			enqueueSnackbar(e?.response?.data?.message || e?.toString?.(), { variant: "error" });
-		}
+		await createBooking({
+			name,
+			vehicle,
+			plant,
+			booking_id: bookingId,
+			date: date.startOf("day").toISOString(),
+		});
 	};
 
 	const disabled = !name || !bookingId || !plant || !vehicle;

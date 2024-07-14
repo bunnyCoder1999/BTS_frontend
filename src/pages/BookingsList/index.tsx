@@ -3,14 +3,13 @@ import "./style.css";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import dayjs from "dayjs";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { Booking } from "./types";
 import { columns } from "./data";
 import { keys, plants, vehicles } from "../../constants";
-import { enqueueSnackbar } from "notistack";
+import { getBookings } from "../../services";
 
 const BookingList = () => {
 	const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
@@ -26,23 +25,13 @@ const BookingList = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const getBookings = async () => {
-			try {
-				setIsLoading(true);
-				const { data } = await axios.get("http://127.0.0.1:8000/booking", {
-					params: { date: date.format("DD/MM/YYYY") },
-				});
-				const _bookings: typeof bookings = { Brahmapuram: [], Willington: [] };
-				const bookingsData = JSON.parse(data?.data || []) as Booking[];
-				bookingsData.map(ele => _bookings?.[ele?.plant]?.push({ ...ele, id: ele.vehicle.number }));
-				setBookings(_bookings);
-			} catch (e: any) {
-				enqueueSnackbar(e?.response?.data?.message || e?.toString?.(), { variant: "error" });
-			} finally {
-				setIsLoading(false);
-			}
+		const fetchBookings = async () => {
+			setIsLoading(true);
+			const bookings = await getBookings(date.startOf("day").toISOString());
+			setBookings(bookings);
+			setIsLoading(false);
 		};
-		getBookings();
+		fetchBookings();
 	}, [date]);
 
 	const filteredBookings = useMemo(() => {
@@ -112,7 +101,7 @@ const BookingList = () => {
 				<Button
 					startIcon={<IoMdAdd />}
 					variant="contained"
-					size="small"
+					size="large"
 					onClick={() => navigate("/create")}
 				>
 					Add new booking
