@@ -3,14 +3,14 @@ import { vehicles } from "../../constants";
 import { request } from "../intercepter";
 
 type createBookingParams = {
-	name: string;
-	vehicle: (typeof vehicles)[number];
-	plant: string;
-	booking_id: string;
-	date: string;
+    name: string;
+    vehicle: (typeof vehicles)[number];
+    plant: string;
+    booking_id: string;
+    date: string;
 };
 
 export const createBooking = async (params: createBookingParams) => {
-	const { data } = await request.post("/booking/create", params);
-	!data.error && enqueueSnackbar(data.message || "Success");
+    const { data } = await request.post("/booking/create", params);
+    !data.error && enqueueSnackbar(data.message || "Success");
 };
