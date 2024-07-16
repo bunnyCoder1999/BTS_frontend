@@ -10,6 +10,7 @@ import { Booking } from "./types";
 import { columns } from "./data";
 import { keys, plants, vehicles } from "../../constants";
 import { getBookings } from "../../services";
+import ExcelJS from "exceljs";
 
 const BookingList = () => {
     const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
@@ -45,6 +46,74 @@ const BookingList = () => {
         const Willington = bookings.Willington?.filter(filterFn);
         return { Willington, Brahmapuram };
     }, [filters, bookings]);
+
+    const exportFile = () => {
+        const wb = new ExcelJS.Workbook();
+        const ws = wb.addWorksheet("Sheet 1");
+        const { Brahmapuram, Willington } = filteredBookings;
+
+        ws.columns = [
+            { header: "Booking ID", key: "booking_id", width: 30 },
+            { header: "Name", key: "name", width: 30 },
+            { header: "Vehicle number", key: "vehicle_number", width: 20 },
+            { header: "Driver name", key: "driver_name", width: 30 },
+        ];
+
+        ws.mergeCells("A1:D1");
+        ws.getCell("A1").value = `${date.format("DD/MM/YYYY")} Willington`;
+        ws.getCell("A1").font = { bold: true };
+        ws.getCell(`A1`).alignment = { horizontal: "center" };
+
+        const headersRow1 = ws.addRow(["Booking ID", "Name", "Vehicle number", "Driver name"]);
+        headersRow1.font = { bold: true };
+
+        Willington.forEach(ele =>
+            ws.addRow({
+                ...ele,
+                vehicle_number: ele.vehicle.number,
+                driver_name: ele.vehicle.driver_name,
+            }),
+        );
+
+        ws.addRow({});
+        ws.addRow({});
+
+        ws.mergeCells(`F1:I1`);
+        ws.getCell(`F1`).value = `${date.format("DD/MM/YYYY")} Brahmapuram`;
+        ws.getCell(`F1`).font = { bold: true };
+        ws.getCell(`F1`).alignment = { horizontal: "center" };
+
+        for (let i = "F".charCodeAt(0), j = 0; i < "J".charCodeAt(0); i++, j++) {
+            const alph = String.fromCharCode(i);
+            ws.getCell(`${alph}2`).value = ws.columns.map(c => c.header)[j] as string;
+            ws.getCell(`${alph}2`).font = { bold: true };
+            ws.getColumn(alph).width = ws.columns[j].width || 20;
+        }
+
+        Brahmapuram.forEach((ele, index) => {
+            for (let i = "F".charCodeAt(0), j = 0; i < "J".charCodeAt(0); i++, j++) {
+                const alph = String.fromCharCode(i);
+                if (ws.columns[j].key === "vehicle_number") {
+                    ws.getCell(`${alph}${index + 3}`).value = ele.vehicle.number;
+                } else if (ws.columns[j].key === "driver_name") {
+                    ws.getCell(`${alph}${index + 3}`).value = ele.vehicle.driver_name;
+                } else {
+                    ws.getCell(`${alph}${index + 3}`).value = ele[ws.columns[j].key || ""];
+                }
+            }
+        });
+
+        wb.xlsx.writeBuffer().then(buffer => {
+            const blob = new Blob([buffer], { type: "application/xlsx" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `data-${date.format("DD/MM/YYYY")}.xlsx`;
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        });
+    };
 
     return (
         <div className="list_container">
@@ -105,6 +174,9 @@ const BookingList = () => {
                     onClick={() => navigate("/create")}
                 >
                     Add new booking
+                </Button>
+                <Button startIcon={<IoMdAdd />} variant="contained" size="large" onClick={exportFile}>
+                    Export
                 </Button>
             </div>
             {plants.map(p => (
