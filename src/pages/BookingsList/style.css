@@ -67,12 +67,18 @@
     align-items: center;
     border-radius: 0.25rem;
     position: relative;
-    padding-inline: 2rem;
+    padding-inline: 2rem 1rem;
+    font-weight: 700;
+}
+
+.status.progress {
+    background: rgba(175, 86, 12, 0.2);
+    color: rgba(175, 86, 12, 1);
 }
 
 .status.pending {
-    background: rgba(175, 86, 12, 0.2);
-    color: rgba(175, 86, 12, 1);
+    background: rgba(175, 12, 12, 0.2);
+    color: rgb(175, 12, 12);
 }
 
 .status::before {
@@ -80,13 +86,10 @@
     content: "";
     width: 0.5rem;
     aspect-ratio: 1;
-    background-color: #22ad65;
     border-radius: 50%;
     left: 1rem;
-}
-
-.status.pending::before {
-    background-color: rgba(175, 86, 12, 1);
+    color: inherit;
+    background-color: currentColor;
 }
 
 @media (width<800px) {

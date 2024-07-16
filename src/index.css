@@ -8,3 +8,7 @@
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
 }
+
+:root {
+    font-size: 14px;
+}

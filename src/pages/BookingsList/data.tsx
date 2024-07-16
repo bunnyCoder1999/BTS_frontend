@@ -45,11 +45,12 @@ export const columns: GridColDef<Booking>[] = [
         resizable: false,
         disableColumnMenu: true,
         renderCell: value => {
-            const completed = dayjs(value.row.date).isBefore(dayjs());
+            const completed = dayjs(value.row.date).isBefore(dayjs().startOf("day"));
+            const inProgress = dayjs(value.row.date).isSame(dayjs().startOf("day"));
             return (
                 <div className="status_container">
-                    <div className={"status" + (completed ? "" : " pending")}>
-                        {completed ? "Completed" : "Pending"}
+                    <div className={"status" + (inProgress ? " progress" : !completed ? " pending" : "")}>
+                        {inProgress ? "In Progress" : completed ? "Completed" : "Pending"}
                     </div>
                 </div>
             );
