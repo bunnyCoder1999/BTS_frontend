@@ -3,14 +3,14 @@ import BookingList from "./pages/BookingsList";
 import CreateBooking from "./pages/CreateBooking";
 
 function App() {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<BookingList />} />
-				<Route path="/create" element={<CreateBooking />} />
-			</Routes>
-		</BrowserRouter>
-	);
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<BookingList />} />
+                <Route path="/create" element={<CreateBooking />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
