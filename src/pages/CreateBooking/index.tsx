@@ -52,6 +52,8 @@ const CreateBooking = () => {
                     </IconButton>
                     Create Booking
                 </h1>
+                <img src={import.meta.env.VITE_APP_GIF_URL} className="gif" />
+
                 {/* <p className="subtitle">
                     Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione obcaecati consectetur
                     eligendi dolore sequi commodi deserunt consequuntur nobis delectus laudantium!
@@ -96,10 +98,9 @@ const CreateBooking = () => {
                 <Button variant="contained" color="info" type="submit" disabled={disabled} size="large">
                     Create Booking
                 </Button>
-                <img src="https://www.icegif.com/wp-content/uploads/2022/01/icegif-965.gif" className="gif" />
             </form>
             <div className="logo">
-                <img src={BTS} alt="logo" />
+                <img src={Logo} alt="logo" />
             </div>
         </main>
     );

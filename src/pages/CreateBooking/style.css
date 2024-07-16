@@ -45,7 +45,8 @@
 }
 
 .gif {
-    width: 100%;
+    width: 50%;
+    margin-inline: auto;
     border-radius: 0.5rem;
 }
 
