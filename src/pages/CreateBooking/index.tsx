@@ -1,4 +1,13 @@
-import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+    Autocomplete,
+    Button,
+    FormControl,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from "@mui/material";
 import "./style.css";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -7,6 +16,8 @@ import { plants, vehicles } from "../../constants";
 import Logo from "../../assets/logo.jpg";
 import BTS from "../../assets/bts.webp";
 import { createBooking } from "../../services";
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const CreateBooking = () => {
     const [date, setDate] = useState(dayjs());
@@ -14,6 +25,7 @@ const CreateBooking = () => {
     const [bookingId, setBookingId] = useState("");
     const [plant, setPlant] = useState("");
     const [vehicle, setVehicle] = useState(null as unknown as (typeof vehicles)[number]);
+    const navigate = useNavigate();
 
     const handleCreateBooking: FormEventHandler<HTMLFormElement> = async e => {
         e.preventDefault();
@@ -32,12 +44,20 @@ const CreateBooking = () => {
     maxDate.setDate(maxDate.getDate() + 5);
 
     return (
-        <div className="create_container">
-            <h1 className="title">Create Booking</h1>
+        <main className="create_container">
             <form className="create_form" onSubmit={handleCreateBooking}>
-                <div className="logo">
-                    <img src={BTS} alt="logo" />
-                </div>
+                <h1 className="title">
+                    <IconButton onClick={() => navigate("/")}>
+                        <FaArrowLeft />
+                    </IconButton>
+                    Create Booking
+                </h1>
+                <img src={import.meta.env.VITE_APP_GIF_URL} className="gif" />
+
+                {/* <p className="subtitle">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione obcaecati consectetur
+                    eligendi dolore sequi commodi deserunt consequuntur nobis delectus laudantium!
+                </p> */}
                 <DatePicker
                     value={date}
                     onChange={date => setDate(date!)}
@@ -75,11 +95,14 @@ const CreateBooking = () => {
                         ))}
                     </Select>
                 </FormControl>
-                <Button variant="contained" color="info" type="submit" disabled={disabled}>
+                <Button variant="contained" color="info" type="submit" disabled={disabled} size="large">
                     Create Booking
                 </Button>
             </form>
-        </div>
+            <div className="logo">
+                <img src={Logo} alt="logo" />
+            </div>
+        </main>
     );
 };
 
