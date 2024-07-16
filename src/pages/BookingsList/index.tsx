@@ -12,128 +12,128 @@ import { keys, plants, vehicles } from "../../constants";
 import { getBookings } from "../../services";
 
 const BookingList = () => {
-	const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
+    const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
 
-	const [date, setDate] = useState(dayjs());
-	const [isLoading, setIsLoading] = useState(false);
-	const [filters, setFilters] = useState({
-		key: "" as keyof Booking,
-		query: "",
-		vehicle: null as unknown as (typeof vehicles)[number],
-	});
+    const [date, setDate] = useState(dayjs());
+    const [isLoading, setIsLoading] = useState(false);
+    const [filters, setFilters] = useState({
+        key: "" as keyof Booking,
+        query: "",
+        vehicle: null as unknown as (typeof vehicles)[number],
+    });
 
-	const navigate = useNavigate();
+    const navigate = useNavigate();
 
-	useEffect(() => {
-		const fetchBookings = async () => {
-			setIsLoading(true);
-			const bookings = await getBookings(date.startOf("day").toISOString());
-			setBookings(bookings);
-			setIsLoading(false);
-		};
-		fetchBookings();
-	}, [date]);
+    useEffect(() => {
+        const fetchBookings = async () => {
+            setIsLoading(true);
+            const bookings = await getBookings(date.startOf("day").toISOString());
+            setBookings(bookings);
+            setIsLoading(false);
+        };
+        fetchBookings();
+    }, [date]);
 
-	const filteredBookings = useMemo(() => {
-		const filterFn = (b: Booking) => {
-			if (!filters.key) return true;
-			const regex = new RegExp(filters.query, "ig");
-			if (filters.key !== "vehicle") return b[filters.key]?.match(regex);
-			return !filters.vehicle || b.vehicle.number === filters.vehicle?.number;
-		};
-		const Brahmapuram = bookings.Brahmapuram?.filter(filterFn);
-		const Willington = bookings.Willington?.filter(filterFn);
-		return { Willington, Brahmapuram };
-	}, [filters, bookings]);
+    const filteredBookings = useMemo(() => {
+        const filterFn = (b: Booking) => {
+            if (!filters.key) return true;
+            const regex = new RegExp(filters.query, "ig");
+            if (filters.key !== "vehicle") return b[filters.key]?.match(regex);
+            return !filters.vehicle || b.vehicle.number === filters.vehicle?.number;
+        };
+        const Brahmapuram = bookings.Brahmapuram?.filter(filterFn);
+        const Willington = bookings.Willington?.filter(filterFn);
+        return { Willington, Brahmapuram };
+    }, [filters, bookings]);
 
-	return (
-		<div className="list_container">
-			<div className="list_header">
-				<div className="list_date">
-					<DatePicker
-						sx={{ scale: "0.75", transformOrigin: "left top" }}
-						value={date}
-						onChange={date => setDate(date!)}
-						format="DD/MM/YYYY"
-					/>
-				</div>
-				<div className="list_keys">
-					<FormControl fullWidth size="small">
-						<InputLabel id="demo-simple-select-label">Select</InputLabel>
-						<Select
-							size="small"
-							onChange={e =>
-								setFilters(ps => ({ ...ps, key: e.target.value as keyof Booking }))
-							}
-							value={filters.key}
-						>
-							{keys.map(k => (
-								<MenuItem value={k.value} key={k.value}>
-									{k.label}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</div>
-				{filters.key === "vehicle" && (
-					<div className="list_vehicles">
-						<Autocomplete
-							options={vehicles}
-							getOptionLabel={o => o.number}
-							renderInput={props => (
-								<TextField {...props} placeholder="Select vehicle number" />
-							)}
-							size="small"
-							value={filters.vehicle}
-							onChange={(e, v) => setFilters(ps => ({ ...ps, vehicle: v! }))}
-							disableClearable
-						/>
-					</div>
-				)}
-				{filters.key !== "vehicle" && (
-					<TextField
-						placeholder="Search"
-						size="small"
-						value={filters.query}
-						onChange={e => setFilters(ps => ({ ...ps, query: e.target.value }))}
-					/>
-				)}
-				<Button
-					startIcon={<IoMdAdd />}
-					variant="contained"
-					size="large"
-					onClick={() => navigate("/create")}
-				>
-					Add new booking
-				</Button>
-			</div>
-			{plants.map(p => (
-				<div className="list_plant" key={p.label}>
-					<h2>{p.label}</h2>
-					<DataGrid
-						rows={filteredBookings[p.label]}
-						columns={columns}
-						disableRowSelectionOnClick
-						loading={isLoading}
-						sx={{
-							border: "none",
-							borderRadius: "0.5rem",
-							overflow: "hidden",
-							table: { padding: "3rem" },
-							"& .MuiDataGrid-cell": {
-								border: "none",
-								"&:focus": {
-									outline: "none",
-								},
-							},
-						}}
-						autoPageSize
-						pagination
-					/>
-				</div>
-			))}
-		</div>
-	);
+    return (
+        <div className="list_container">
+            <div className="list_header">
+                <div className="list_date">
+                    <DatePicker
+                        sx={{ scale: "0.75", transformOrigin: "left top" }}
+                        value={date}
+                        onChange={date => setDate(date!)}
+                        format="DD/MM/YYYY"
+                    />
+                </div>
+                <div className="list_keys">
+                    <FormControl fullWidth size="small">
+                        <InputLabel id="demo-simple-select-label">Select</InputLabel>
+                        <Select
+                            size="small"
+                            onChange={e =>
+                                setFilters(ps => ({ ...ps, key: e.target.value as keyof Booking }))
+                            }
+                            value={filters.key}
+                        >
+                            {keys.map(k => (
+                                <MenuItem value={k.value} key={k.value}>
+                                    {k.label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
+                {filters.key === "vehicle" && (
+                    <div className="list_vehicles">
+                        <Autocomplete
+                            options={vehicles}
+                            getOptionLabel={o => o.number}
+                            renderInput={props => (
+                                <TextField {...props} placeholder="Select vehicle number" />
+                            )}
+                            size="small"
+                            value={filters.vehicle}
+                            onChange={(e, v) => setFilters(ps => ({ ...ps, vehicle: v! }))}
+                            disableClearable
+                        />
+                    </div>
+                )}
+                {filters.key !== "vehicle" && (
+                    <TextField
+                        placeholder="Search"
+                        size="small"
+                        value={filters.query}
+                        onChange={e => setFilters(ps => ({ ...ps, query: e.target.value }))}
+                    />
+                )}
+                <Button
+                    startIcon={<IoMdAdd />}
+                    variant="contained"
+                    size="large"
+                    onClick={() => navigate("/create")}
+                >
+                    Add new booking
+                </Button>
+            </div>
+            {plants.map(p => (
+                <div className="list_plant" key={p.label}>
+                    <h2>{p.label}</h2>
+                    <DataGrid
+                        rows={filteredBookings[p.label]}
+                        columns={columns}
+                        disableRowSelectionOnClick
+                        loading={isLoading}
+                        sx={{
+                            border: "none",
+                            borderRadius: "0.5rem",
+                            overflow: "hidden",
+                            table: { padding: "3rem" },
+                            "& .MuiDataGrid-cell": {
+                                border: "none",
+                                "&:focus": {
+                                    outline: "none",
+                                },
+                            },
+                        }}
+                        autoPageSize
+                        pagination
+                    />
+                </div>
+            ))}
+        </div>
+    );
 };
 
 export default BookingList;

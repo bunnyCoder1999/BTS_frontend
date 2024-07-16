@@ -9,17 +9,17 @@ import { createTheme } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 
 const darkTheme = createTheme({
-	palette: { mode: "dark", primary: { main: "#313131" } },
+    palette: { mode: "dark", primary: { main: "#313131" } },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-	<React.StrictMode>
-		<LocalizationProvider dateAdapter={AdapterDayjs}>
-			<ThemeProvider theme={darkTheme}>
-				<SnackbarProvider variant="success">
-					<App />
-				</SnackbarProvider>
-			</ThemeProvider>
-		</LocalizationProvider>
-	</React.StrictMode>
+    <React.StrictMode>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <ThemeProvider theme={darkTheme}>
+                <SnackbarProvider variant="success">
+                    <App />
+                </SnackbarProvider>
+            </ThemeProvider>
+        </LocalizationProvider>
+    </React.StrictMode>,
 );

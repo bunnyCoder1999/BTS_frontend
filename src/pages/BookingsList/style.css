@@ -1,90 +1,104 @@
 .list_container {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	background-color: #171717;
-	min-height: 100dvh;
-	gap: 2rem;
-	padding: 2rem;
-	width: 100%;
-	overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: #171717;
+    min-height: 100dvh;
+    gap: 2rem;
+    padding: 2rem;
+    width: 100%;
+    overflow: hidden;
 }
 
 .list_header {
-	grid-column: span 2;
-	display: flex;
-	gap: 1rem;
-	align-items: flex-start;
+    grid-column: span 2;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
 }
 
 .list_plant {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .list_plant h2 {
-	text-align: center;
-	color: white;
+    text-align: center;
+    color: white;
 }
 
 .list_keys {
-	max-width: 15rem;
-	margin-left: auto;
-	flex: 1;
+    max-width: 15rem;
+    margin-left: auto;
+    flex: 1;
 }
 
 .list_vehicles {
-	max-width: 15rem;
-	flex: 1;
+    max-width: 15rem;
+    flex: 1;
 }
 
 .list_date {
-	height: 3rem;
-	overflow: hidden;
+    height: 3rem;
+    overflow: hidden;
 }
 
 .list_table_header {
-	background-color: #1f1f1f;
-	display: flex;
+    background-color: #1f1f1f;
+    display: flex;
 }
 
 .list_table_header:focus {
-	outline: none !important;
+    outline: none !important;
 }
 
 .status_container {
-	display: flex;
-	align-items: center;
-	height: 100%;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .status {
-	width: max-content;
-	background: rgba(54, 190, 119, 0.2);
-	color: #22ad65;
-	height: 2rem;
-	display: flex;
-	align-items: center;
-	border-radius: 0.25rem;
-	position: relative;
-	padding-inline: 2rem;
+    width: max-content;
+    background: rgba(54, 190, 119, 0.2);
+    color: #22ad65;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.25rem;
+    position: relative;
+    padding-inline: 2rem;
 }
 
 .status.pending {
-	background: rgba(175, 86, 12, 0.2);
-	color: rgba(175, 86, 12, 1);
+    background: rgba(175, 86, 12, 0.2);
+    color: rgba(175, 86, 12, 1);
 }
 
 .status::before {
-	position: absolute;
-	content: "";
-	width: 0.5rem;
-	aspect-ratio: 1;
-	background-color: #22ad65;
-	border-radius: 50%;
-	left: 1rem;
+    position: absolute;
+    content: "";
+    width: 0.5rem;
+    aspect-ratio: 1;
+    background-color: #22ad65;
+    border-radius: 50%;
+    left: 1rem;
 }
 
 .status.pending::before {
-	background-color: rgba(175, 86, 12, 1);
+    background-color: rgba(175, 86, 12, 1);
+}
+
+@media (width<800px) {
+    .list_container {
+        grid-template-columns: 1fr;
+    }
+    .list_header {
+        grid-column: span 1;
+        flex-direction: column;
+        > * {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
 }
