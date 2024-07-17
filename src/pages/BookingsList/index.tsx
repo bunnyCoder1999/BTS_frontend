@@ -26,6 +26,7 @@ import { keys, plants, vehicles } from "../../constants";
 import { deleteBooking, getBookings } from "../../services";
 import ExcelJS from "exceljs";
 import { MdDelete } from "react-icons/md";
+import { useDebounce } from "../../utils";
 
 const BookingList = () => {
     const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
@@ -38,6 +39,8 @@ const BookingList = () => {
         query: "",
         vehicle: null as unknown as (typeof vehicles)[number],
     });
+
+    const debouncedQuery = useDebounce(filters.query, 500);
 
     const navigate = useNavigate();
 
@@ -54,14 +57,14 @@ const BookingList = () => {
     const filteredBookings = useMemo(() => {
         const filterFn = (b: Booking) => {
             if (!filters.key) return true;
-            const regex = new RegExp(filters.query, "ig");
+            const regex = new RegExp(debouncedQuery, "ig");
             if (filters.key !== "vehicle") return b[filters.key]?.match(regex);
             return !filters.vehicle || b.vehicle.number === filters.vehicle?.number;
         };
         const Brahmapuram = bookings.Brahmapuram?.filter(filterFn);
         const Willington = bookings.Willington?.filter(filterFn);
         return { Willington, Brahmapuram };
-    }, [filters, bookings]);
+    }, [filters.key, filters.vehicle, bookings, debouncedQuery]);
 
     const exportFile = () => {
         const wb = new ExcelJS.Workbook();
