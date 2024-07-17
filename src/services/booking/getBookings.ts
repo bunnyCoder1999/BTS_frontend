@@ -5,6 +5,12 @@ export const getBookings = async (date?: string) => {
     const bookings = { Brahmapuram: [] as Booking[], Willington: [] as Booking[] };
     const { data } = await request.get("/booking", { params: { date } });
     const bookingsData = (data?.data || []) as Booking[];
-    bookingsData.map(ele => bookings?.[ele?.plant]?.push({ ...ele, id: ele.vehicle.number }));
+    bookingsData.map(ele =>
+        bookings?.[ele?.plant]?.push({
+            ...ele,
+            id: ele.booking_id,
+            sl_no: (bookings?.[ele?.plant]?.length || 0) + 1 + "",
+        }),
+    );
     return bookings;
 };

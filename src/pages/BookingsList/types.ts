@@ -9,4 +9,5 @@ export type Booking = {
     booking_id: string;
     id: string;
     status?: string;
+    sl_no?: string;
 };

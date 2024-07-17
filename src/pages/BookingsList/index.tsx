@@ -245,7 +245,9 @@ const BookingList = () => {
             </div>
             {plants.map(p => (
                 <div className="list_plant" key={p.label}>
-                    <h2>{p.label}</h2>
+                    <h2>
+                        {p.label} {`(${date.format("DD/MM/YYYY")})`}
+                    </h2>
                     <DataGrid
                         rows={filteredBookings[p.label]}
                         columns={columns(setDeletingBooking, handleEditStatus)}

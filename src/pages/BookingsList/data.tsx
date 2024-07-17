@@ -1,6 +1,5 @@
 import { GridColDef } from "@mui/x-data-grid";
 import { Booking } from "./types";
-import dayjs from "dayjs";
 import { IconButton } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 
@@ -9,13 +8,13 @@ export const columns: (
     onEdit: (b: Booking) => void,
 ) => GridColDef<Booking>[] = (onDelete, onEdit) => [
     {
-        field: "date",
-        headerName: "Date",
+        field: "sl_no",
+        headerName: "Sl No",
         flex: 1,
         headerClassName: "list_table_header",
         resizable: false,
         disableColumnMenu: true,
-        valueGetter: (value, row) => dayjs(row.date).format("DD/MM/YYYY"),
+        width: 50,
     },
     {
         field: "booking_id",
@@ -52,7 +51,10 @@ export const columns: (
         renderCell: value => {
             return (
                 <div className="status_container">
-                    <button className={"status" + " " + value.row.status} onClick={() => onEdit(value.row)}>
+                    <button
+                        className={"status" + " " + value.row.status?.replace(" ", "")}
+                        onClick={() => onEdit(value.row)}
+                    >
                         {value.row.status}
                     </button>
                 </div>

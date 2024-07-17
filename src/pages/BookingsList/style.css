@@ -72,10 +72,10 @@
     cursor: pointer;
 }
 
-/* .status.progress {
-    background: rgba(175, 86, 12, 0.2);
-    color: rgba(175, 86, 12, 1);
-} */
+.status.WaitingList {
+    background: rgba(175, 12, 12, 0.2);
+    color: rgb(175, 12, 12);
+}
 
 .status.Pending {
     background: rgba(175, 86, 12, 0.2);
