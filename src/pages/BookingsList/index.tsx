@@ -1,7 +1,21 @@
 import { DataGrid } from "@mui/x-data-grid";
 import "./style.css";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+    Autocomplete,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { IoMdAdd } from "react-icons/io";
@@ -9,12 +23,15 @@ import { useNavigate } from "react-router-dom";
 import { Booking } from "./types";
 import { columns } from "./data";
 import { keys, plants, vehicles } from "../../constants";
-import { getBookings } from "../../services";
+import { deleteBooking, getBookings } from "../../services";
 import ExcelJS from "exceljs";
+import { MdDelete } from "react-icons/md";
+import { useDebounce } from "../../utils";
 
 const BookingList = () => {
     const [bookings, setBookings] = useState({ Brahmapuram: [] as Booking[], Willington: [] as Booking[] });
-
+    const [deletingBooking, setDeletingBooking] = useState<Booking | null>(null);
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false);
     const [date, setDate] = useState(dayjs());
     const [isLoading, setIsLoading] = useState(false);
     const [filters, setFilters] = useState({
@@ -22,6 +39,8 @@ const BookingList = () => {
         query: "",
         vehicle: null as unknown as (typeof vehicles)[number],
     });
+
+    const debouncedQuery = useDebounce(filters.query, 500);
 
     const navigate = useNavigate();
 
@@ -38,14 +57,14 @@ const BookingList = () => {
     const filteredBookings = useMemo(() => {
         const filterFn = (b: Booking) => {
             if (!filters.key) return true;
-            const regex = new RegExp(filters.query, "ig");
+            const regex = new RegExp(debouncedQuery, "ig");
             if (filters.key !== "vehicle") return b[filters.key]?.match(regex);
             return !filters.vehicle || b.vehicle.number === filters.vehicle?.number;
         };
         const Brahmapuram = bookings.Brahmapuram?.filter(filterFn);
         const Willington = bookings.Willington?.filter(filterFn);
         return { Willington, Brahmapuram };
-    }, [filters, bookings]);
+    }, [filters.key, filters.vehicle, bookings, debouncedQuery]);
 
     const exportFile = () => {
         const wb = new ExcelJS.Workbook();
@@ -84,21 +103,21 @@ const BookingList = () => {
         ws.getCell(`F1`).alignment = { horizontal: "center" };
 
         for (let i = "F".charCodeAt(0), j = 0; i < "J".charCodeAt(0); i++, j++) {
-            const alph = String.fromCharCode(i);
-            ws.getCell(`${alph}2`).value = ws.columns.map(c => c.header)[j] as string;
-            ws.getCell(`${alph}2`).font = { bold: true };
-            ws.getColumn(alph).width = ws.columns[j].width || 20;
+            const columnKey = String.fromCharCode(i);
+            ws.getCell(`${columnKey}2`).value = ws.columns.map(c => c.header)[j] as string;
+            ws.getCell(`${columnKey}2`).font = { bold: true };
+            ws.getColumn(columnKey).width = ws.columns[j].width || 20;
         }
 
         Brahmapuram.forEach((ele, index) => {
             for (let i = "F".charCodeAt(0), j = 0; i < "J".charCodeAt(0); i++, j++) {
-                const alph = String.fromCharCode(i);
+                const columnKey = String.fromCharCode(i);
                 if (ws.columns[j].key === "vehicle_number") {
-                    ws.getCell(`${alph}${index + 3}`).value = ele.vehicle.number;
+                    ws.getCell(`${columnKey}${index + 3}`).value = ele.vehicle.number;
                 } else if (ws.columns[j].key === "driver_name") {
-                    ws.getCell(`${alph}${index + 3}`).value = ele.vehicle.driver_name;
+                    ws.getCell(`${columnKey}${index + 3}`).value = ele.vehicle.driver_name;
                 } else {
-                    ws.getCell(`${alph}${index + 3}`).value = ele[ws.columns[j].key || ""];
+                    ws.getCell(`${columnKey}${index + 3}`).value = ele[ws.columns[j].key || ""];
                 }
             }
         });
@@ -115,8 +134,46 @@ const BookingList = () => {
         });
     };
 
+    const handleCloseModal = () => setDeletingBooking(null);
+
+    const handleDeleteBooking = async () => {
+        setIsDeleteLoading(true);
+        deletingBooking && (await deleteBooking(deletingBooking?.booking_id));
+        handleCloseModal();
+        setIsDeleteLoading(false);
+    };
+
     return (
         <div className="list_container">
+            <Dialog open={!!deletingBooking} onClose={handleCloseModal}>
+                <DialogTitle variant="h5" fontWeight={700}>
+                    Delete
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Are you sure you want to delete the booking?</DialogContentText>
+                    <DialogActions sx={{ justifyContent: "space-between", paddingBlock: "2rem 1rem", px: 0 }}>
+                        <Button variant="contained" size="large" onClick={handleCloseModal}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            startIcon={
+                                isDeleteLoading ? (
+                                    <CircularProgress size={20} sx={{ color: "white" }} />
+                                ) : (
+                                    <MdDelete />
+                                )
+                            }
+                            size="large"
+                            onClick={handleDeleteBooking}
+                            disabled={isDeleteLoading}
+                        >
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
             <div className="list_header">
                 <div className="list_date">
                     <DatePicker
@@ -184,7 +241,7 @@ const BookingList = () => {
                     <h2>{p.label}</h2>
                     <DataGrid
                         rows={filteredBookings[p.label]}
-                        columns={columns}
+                        columns={columns(setDeletingBooking)}
                         disableRowSelectionOnClick
                         loading={isLoading}
                         sx={{
