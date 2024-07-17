@@ -4,7 +4,10 @@ import dayjs from "dayjs";
 import { IconButton } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 
-export const columns: (onDelete: (b: Booking) => void) => GridColDef<Booking>[] = onDelete => [
+export const columns: (
+    onDelete: (b: Booking) => void,
+    onEdit: (b: Booking) => void,
+) => GridColDef<Booking>[] = (onDelete, onEdit) => [
     {
         field: "date",
         headerName: "Date",
@@ -47,13 +50,11 @@ export const columns: (onDelete: (b: Booking) => void) => GridColDef<Booking>[] 
         disableColumnMenu: true,
         width: 150,
         renderCell: value => {
-            const completed = dayjs(value.row.date).isBefore(dayjs().startOf("day"));
-            const inProgress = dayjs(value.row.date).isSame(dayjs().startOf("day"));
             return (
                 <div className="status_container">
-                    <div className={"status" + (inProgress ? " progress" : !completed ? " pending" : "")}>
-                        {inProgress ? "In Progress" : completed ? "Completed" : "Pending"}
-                    </div>
+                    <button className={"status" + " " + value.row.status} onClick={() => onEdit(value.row)}>
+                        {value.row.status}
+                    </button>
                 </div>
             );
         },

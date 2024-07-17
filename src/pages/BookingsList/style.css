@@ -69,16 +69,17 @@
     position: relative;
     padding-inline: 2rem 1rem;
     font-weight: 700;
+    cursor: pointer;
 }
 
-.status.progress {
+/* .status.progress {
     background: rgba(175, 86, 12, 0.2);
     color: rgba(175, 86, 12, 1);
-}
+} */
 
-.status.pending {
-    background: rgba(175, 12, 12, 0.2);
-    color: rgb(175, 12, 12);
+.status.Pending {
+    background: rgba(175, 86, 12, 0.2);
+    color: rgba(175, 86, 12, 1);
 }
 
 .status::before {

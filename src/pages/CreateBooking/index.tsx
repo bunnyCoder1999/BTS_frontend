@@ -46,6 +46,7 @@ const CreateBooking = () => {
             plant,
             booking_id: bookingId,
             date: date.startOf("day").toISOString(),
+            status: "Pending",
         });
         setData(INITIAL_VALUES);
     };

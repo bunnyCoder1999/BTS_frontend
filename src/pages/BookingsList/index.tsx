@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { Booking } from "./types";
 import { columns } from "./data";
 import { keys, plants, vehicles } from "../../constants";
-import { deleteBooking, getBookings } from "../../services";
+import { deleteBooking, editStatus, getBookings } from "../../services";
 import ExcelJS from "exceljs";
 import { MdDelete } from "react-icons/md";
 import { useDebounce } from "../../utils";
@@ -44,13 +44,14 @@ const BookingList = () => {
 
     const navigate = useNavigate();
 
+    const fetchBookings = async () => {
+        setIsLoading(true);
+        const bookings = await getBookings(date.startOf("day").toISOString());
+        setBookings(bookings);
+        setIsLoading(false);
+    };
+
     useEffect(() => {
-        const fetchBookings = async () => {
-            setIsLoading(true);
-            const bookings = await getBookings(date.startOf("day").toISOString());
-            setBookings(bookings);
-            setIsLoading(false);
-        };
         fetchBookings();
     }, [date]);
 
@@ -141,6 +142,12 @@ const BookingList = () => {
         deletingBooking && (await deleteBooking(deletingBooking?.booking_id));
         handleCloseModal();
         setIsDeleteLoading(false);
+        fetchBookings();
+    };
+
+    const handleEditStatus = async (booking: Booking) => {
+        await editStatus(booking.status === "Pending" ? "Completed" : "Pending", booking.booking_id);
+        fetchBookings();
     };
 
     return (
@@ -241,7 +248,7 @@ const BookingList = () => {
                     <h2>{p.label}</h2>
                     <DataGrid
                         rows={filteredBookings[p.label]}
-                        columns={columns(setDeletingBooking)}
+                        columns={columns(setDeletingBooking, handleEditStatus)}
                         disableRowSelectionOnClick
                         loading={isLoading}
                         sx={{

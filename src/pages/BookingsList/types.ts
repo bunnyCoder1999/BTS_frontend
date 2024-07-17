@@ -8,4 +8,5 @@ export type Booking = {
     plant: "Brahmapuram" | "Willington";
     booking_id: string;
     id: string;
+    status?: string;
 };

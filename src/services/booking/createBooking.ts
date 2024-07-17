@@ -8,6 +8,7 @@ type createBookingParams = {
     plant: string;
     booking_id: string;
     date: string;
+    status: string;
 };
 
 export const createBooking = async (params: createBookingParams) => {
