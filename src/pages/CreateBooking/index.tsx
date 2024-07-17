@@ -1,6 +1,7 @@
 import {
     Autocomplete,
     Button,
+    CircularProgress,
     FormControl,
     IconButton,
     InputLabel,
@@ -19,15 +20,25 @@ import { createBooking } from "../../services";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+const INITIAL_VALUES = {
+    date: dayjs(),
+    name: "",
+    bookingId: "",
+    plant: "",
+    vehicle: null as unknown as (typeof vehicles)[number],
+    loading: false,
+};
+
+type INITIAL_VALUES = typeof INITIAL_VALUES;
+
 const CreateBooking = () => {
-    const [date, setDate] = useState(dayjs());
-    const [name, setName] = useState("");
-    const [bookingId, setBookingId] = useState("");
-    const [plant, setPlant] = useState("");
-    const [vehicle, setVehicle] = useState(null as unknown as (typeof vehicles)[number]);
+    const [data, setData] = useState(INITIAL_VALUES);
     const navigate = useNavigate();
 
+    const { bookingId, date, name, plant, vehicle, loading } = data;
+
     const handleCreateBooking: FormEventHandler<HTMLFormElement> = async e => {
+        handleFormChange("loading", true);
         e.preventDefault();
         await createBooking({
             name,
@@ -36,12 +47,17 @@ const CreateBooking = () => {
             booking_id: bookingId,
             date: date.startOf("day").toISOString(),
         });
+        setData(INITIAL_VALUES);
     };
 
-    const disabled = !name || !bookingId || !plant || !vehicle;
+    const disabled = !name || !bookingId || !plant || !vehicle || loading;
 
     const maxDate = new Date();
     maxDate.setDate(maxDate.getDate() + 5);
+
+    function handleFormChange<T extends keyof INITIAL_VALUES>(key: T, value: INITIAL_VALUES[T]) {
+        setData(ps => ({ ...ps, [key]: value }));
+    }
 
     return (
         <main className="create_container">
@@ -58,7 +74,7 @@ const CreateBooking = () => {
                 </p> */}
                 <DatePicker
                     value={date}
-                    onChange={date => setDate(date!)}
+                    onChange={date => handleFormChange("date", date!)}
                     format="DD/MM/YYYY"
                     minDate={dayjs()}
                     maxDate={dayjs(maxDate)}
@@ -67,25 +83,25 @@ const CreateBooking = () => {
                     placeholder="Enter Name"
                     label="Name"
                     value={name}
-                    onChange={e => setName(e.target.value)}
+                    onChange={e => handleFormChange("name", e.target.value)}
                 />
                 <TextField
                     placeholder="Enter Booking ID"
                     label="Booking ID"
                     value={bookingId}
-                    onChange={e => setBookingId(e.target.value)}
+                    onChange={e => handleFormChange("bookingId", e.target.value)}
                 />
                 <Autocomplete
                     options={vehicles}
                     getOptionLabel={o => o.number}
                     renderInput={props => <TextField {...props} placeholder="Select vehicle number" />}
                     value={vehicle}
-                    onChange={(e, v) => setVehicle(v)}
+                    onChange={(e, v) => handleFormChange("vehicle", v)}
                     disableClearable
                 />
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Select Plant</InputLabel>
-                    <Select onChange={e => setPlant(e.target.value)} value={plant}>
+                    <Select onChange={e => handleFormChange("plant", e.target.value)} value={plant}>
                         {plants.map(p => (
                             <MenuItem value={p.label} key={p.label}>
                                 {p.label}
@@ -94,7 +110,7 @@ const CreateBooking = () => {
                     </Select>
                 </FormControl>
                 <Button variant="contained" color="info" type="submit" disabled={disabled} size="large">
-                    Create Booking
+                    {loading ? <CircularProgress size={25} /> : "Create Booking"}
                 </Button>
                 <img src="https://www.icegif.com/wp-content/uploads/2022/01/icegif-965.gif" className="gif" />
             </form>
