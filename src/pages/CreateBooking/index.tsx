@@ -83,8 +83,7 @@ const CreateBooking = () => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        This vehicles has already registered one or more booking in the given date, do you
-                        want to add one more slot?
+                        This vehicles has already registered one or more booking in the given date, do you want to add one more slot?
                     </DialogContentText>
                     <DialogActions sx={{ justifyContent: "space-between", paddingBlock: "2rem 1rem", px: 0 }}>
                         <Button variant="contained" size="large" onClick={handleCloseModal}>
@@ -93,13 +92,7 @@ const CreateBooking = () => {
                         <Button
                             variant="contained"
                             color="info"
-                            startIcon={
-                                data.loading ? (
-                                    <CircularProgress size={20} sx={{ color: "white" }} />
-                                ) : (
-                                    <IoMdAdd />
-                                )
-                            }
+                            startIcon={data.loading ? <CircularProgress size={20} sx={{ color: "white" }} /> : <IoMdAdd />}
                             size="large"
                             onClick={handleCreateBooking}
                             disabled={data.loading}
@@ -124,12 +117,7 @@ const CreateBooking = () => {
                     minDate={dayjs()}
                     maxDate={dayjs(maxDate)}
                 />
-                <TextField
-                    placeholder="Enter Name"
-                    label="Name"
-                    value={name}
-                    onChange={e => handleFormChange("name", e.target.value)}
-                />
+                <TextField placeholder="Enter Name" label="Name" value={name} onChange={e => handleFormChange("name", e.target.value)} />
                 <TextField
                     placeholder="Enter Booking ID"
                     label="Booking ID"
@@ -159,12 +147,7 @@ const CreateBooking = () => {
                 </Button>
             </form>
             <div className="logo">
-                <img
-                    src={
-                        "https://as1.ftcdn.net/v2/jpg/05/73/57/76/1000_F_573577614_3xNASp9y2eCUSXstGdXf9sKlW3ZYVyUr.jpg"
-                    }
-                    alt="logo"
-                />
+                <img src={"https://as1.ftcdn.net/v2/jpg/05/73/57/76/1000_F_573577614_3xNASp9y2eCUSXstGdXf9sKlW3ZYVyUr.jpg"} alt="logo" />
             </div>
         </main>
     );

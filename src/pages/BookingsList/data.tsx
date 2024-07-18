@@ -3,10 +3,7 @@ import { Booking } from "./types";
 import { IconButton } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 
-export const columns: (
-    onDelete: (b: Booking) => void,
-    onEdit: (b: Booking) => void,
-) => GridColDef<Booking>[] = (onDelete, onEdit) => [
+export const columns: (onDelete: (b: Booking) => void, onEdit: (b: Booking) => void) => GridColDef<Booking>[] = (onDelete, onEdit) => [
     {
         field: "sl_no",
         headerName: "Sl No",
@@ -59,10 +56,7 @@ export const columns: (
         renderCell: value => {
             return (
                 <div className="status_container">
-                    <button
-                        className={"status" + " " + value.row.status?.replace(" ", "")}
-                        onClick={() => onEdit(value.row)}
-                    >
+                    <button className={"status" + " " + value.row.status?.replace(" ", "")} onClick={() => onEdit(value.row)}>
                         {value.row.status}
                     </button>
                 </div>

@@ -165,13 +165,7 @@ const BookingList = () => {
                         <Button
                             variant="contained"
                             color="error"
-                            startIcon={
-                                isDeleteLoading ? (
-                                    <CircularProgress size={20} sx={{ color: "white" }} />
-                                ) : (
-                                    <MdDelete />
-                                )
-                            }
+                            startIcon={isDeleteLoading ? <CircularProgress size={20} sx={{ color: "white" }} /> : <MdDelete />}
                             size="large"
                             onClick={handleDeleteBooking}
                             disabled={isDeleteLoading}
@@ -193,13 +187,7 @@ const BookingList = () => {
                 <div className="list_keys">
                     <FormControl fullWidth size="small">
                         <InputLabel id="demo-simple-select-label">Select</InputLabel>
-                        <Select
-                            size="small"
-                            onChange={e =>
-                                setFilters(ps => ({ ...ps, key: e.target.value as keyof Booking }))
-                            }
-                            value={filters.key}
-                        >
+                        <Select size="small" onChange={e => setFilters(ps => ({ ...ps, key: e.target.value as keyof Booking }))} value={filters.key}>
                             {keys.map(k => (
                                 <MenuItem value={k.value} key={k.value}>
                                     {k.label}
@@ -213,9 +201,7 @@ const BookingList = () => {
                         <Autocomplete
                             options={vehicles}
                             getOptionLabel={o => o.number}
-                            renderInput={props => (
-                                <TextField {...props} placeholder="Select vehicle number" />
-                            )}
+                            renderInput={props => <TextField {...props} placeholder="Select vehicle number" />}
                             size="small"
                             value={filters.vehicle}
                             onChange={(e, v) => setFilters(ps => ({ ...ps, vehicle: v! }))}
@@ -230,12 +216,7 @@ const BookingList = () => {
                         onChange={e => setFilters(ps => ({ ...ps, query: e.target.value }))}
                     />
                 )}
-                <Button
-                    startIcon={<IoMdAdd />}
-                    variant="contained"
-                    size="large"
-                    onClick={() => navigate("/create")}
-                >
+                <Button startIcon={<IoMdAdd />} variant="contained" size="large" onClick={() => navigate("/create")}>
                     Add new booking
                 </Button>
                 <Button startIcon={<IoMdAdd />} variant="contained" size="large" onClick={exportFile}>
