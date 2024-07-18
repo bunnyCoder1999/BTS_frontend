@@ -59,7 +59,7 @@ const BookingList = () => {
         const filterFn = (b: Booking) => {
             if (!filters.key) return true;
             const regex = new RegExp(debouncedQuery, "ig");
-            if (filters.key !== "vehicle") return b[filters.key]?.match(regex);
+            if (filters.key !== "vehicle") return (b[filters.key] as string)?.match(regex);
             return !filters.vehicle || b.vehicle.number === filters.vehicle?.number;
         };
         const Brahmapuram = bookings.Brahmapuram?.filter(filterFn);

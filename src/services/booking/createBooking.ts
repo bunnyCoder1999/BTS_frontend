@@ -9,9 +9,11 @@ type createBookingParams = {
     booking_id: string;
     date: string;
     status: string;
+    forced: boolean;
 };
 
 export const createBooking = async (params: createBookingParams) => {
     const { data } = await request.post("/booking/create", params);
     !data.error && enqueueSnackbar(data.message || "Success");
+    return data;
 };
