@@ -16,7 +16,7 @@ import {
     Select,
     TextField,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -44,16 +44,16 @@ const BookingList = () => {
 
     const navigate = useNavigate();
 
-    const fetchBookings = async () => {
+    const fetchBookings = useCallback(async () => {
         setIsLoading(true);
         const bookings = await getBookings(date.startOf("day").toISOString());
         setBookings(bookings);
         setIsLoading(false);
-    };
+    }, [date]);
 
     useEffect(() => {
         fetchBookings();
-    }, [date]);
+    }, [fetchBookings]);
 
     const filteredBookings = useMemo(() => {
         const filterFn = (b: Booking) => {
@@ -184,7 +184,7 @@ const BookingList = () => {
             <div className="list_header">
                 <div className="list_date">
                     <DatePicker
-                        sx={{ scale: "0.75", transformOrigin: "left top" }}
+                        sx={{ scale: "0.8", transformOrigin: "left top" }}
                         value={date}
                         onChange={date => setDate(date!)}
                         format="DD/MM/YYYY"
@@ -219,7 +219,6 @@ const BookingList = () => {
                             size="small"
                             value={filters.vehicle}
                             onChange={(e, v) => setFilters(ps => ({ ...ps, vehicle: v! }))}
-                            disableClearable
                         />
                     </div>
                 )}

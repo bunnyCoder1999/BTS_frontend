@@ -10,11 +10,10 @@ export const columns: (
     {
         field: "sl_no",
         headerName: "Sl No",
-        flex: 1,
         headerClassName: "list_table_header",
         resizable: false,
         disableColumnMenu: true,
-        width: 50,
+        width: 70,
     },
     {
         field: "booking_id",
