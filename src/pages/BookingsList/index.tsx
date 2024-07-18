@@ -16,7 +16,7 @@ import {
     Select,
     TextField,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +35,7 @@ const BookingList = () => {
     const [date, setDate] = useState(dayjs());
     const [isLoading, setIsLoading] = useState(false);
     const [filters, setFilters] = useState({
-        key: "" as keyof Booking,
+        key: "booking_id" as keyof Booking,
         query: "",
         vehicle: null as unknown as (typeof vehicles)[number],
     });
@@ -44,22 +44,24 @@ const BookingList = () => {
 
     const navigate = useNavigate();
 
-    const fetchBookings = async () => {
+    const fetchBookings = useCallback(async () => {
         setIsLoading(true);
         const bookings = await getBookings(date.startOf("day").toISOString());
         setBookings(bookings);
         setIsLoading(false);
-    };
+    }, [date]);
+
+    const passKey = sessionStorage.getItem("pass_key");
 
     useEffect(() => {
         fetchBookings();
-    }, [date]);
+    }, [fetchBookings, passKey]);
 
     const filteredBookings = useMemo(() => {
         const filterFn = (b: Booking) => {
             if (!filters.key) return true;
             const regex = new RegExp(debouncedQuery, "ig");
-            if (filters.key !== "vehicle") return b[filters.key]?.match(regex);
+            if (filters.key !== "vehicle") return (b[filters.key] as string)?.match(regex);
             return !filters.vehicle || b.vehicle.number === filters.vehicle?.number;
         };
         const Brahmapuram = bookings.Brahmapuram?.filter(filterFn);
@@ -165,13 +167,7 @@ const BookingList = () => {
                         <Button
                             variant="contained"
                             color="error"
-                            startIcon={
-                                isDeleteLoading ? (
-                                    <CircularProgress size={20} sx={{ color: "white" }} />
-                                ) : (
-                                    <MdDelete />
-                                )
-                            }
+                            startIcon={isDeleteLoading ? <CircularProgress size={20} sx={{ color: "white" }} /> : <MdDelete />}
                             size="large"
                             onClick={handleDeleteBooking}
                             disabled={isDeleteLoading}
@@ -184,7 +180,7 @@ const BookingList = () => {
             <div className="list_header">
                 <div className="list_date">
                     <DatePicker
-                        sx={{ scale: "0.75", transformOrigin: "left top" }}
+                        sx={{ scale: "0.8", transformOrigin: "left top" }}
                         value={date}
                         onChange={date => setDate(date!)}
                         format="DD/MM/YYYY"
@@ -193,13 +189,7 @@ const BookingList = () => {
                 <div className="list_keys">
                     <FormControl fullWidth size="small">
                         <InputLabel id="demo-simple-select-label">Select</InputLabel>
-                        <Select
-                            size="small"
-                            onChange={e =>
-                                setFilters(ps => ({ ...ps, key: e.target.value as keyof Booking }))
-                            }
-                            value={filters.key}
-                        >
+                        <Select size="small" onChange={e => setFilters(ps => ({ ...ps, key: e.target.value as keyof Booking }))} value={filters.key}>
                             {keys.map(k => (
                                 <MenuItem value={k.value} key={k.value}>
                                     {k.label}
@@ -213,13 +203,10 @@ const BookingList = () => {
                         <Autocomplete
                             options={vehicles}
                             getOptionLabel={o => o.number}
-                            renderInput={props => (
-                                <TextField {...props} placeholder="Select vehicle number" />
-                            )}
+                            renderInput={props => <TextField {...props} placeholder="Select vehicle number" />}
                             size="small"
                             value={filters.vehicle}
                             onChange={(e, v) => setFilters(ps => ({ ...ps, vehicle: v! }))}
-                            disableClearable
                         />
                     </div>
                 )}
@@ -231,12 +218,7 @@ const BookingList = () => {
                         onChange={e => setFilters(ps => ({ ...ps, query: e.target.value }))}
                     />
                 )}
-                <Button
-                    startIcon={<IoMdAdd />}
-                    variant="contained"
-                    size="large"
-                    onClick={() => navigate("/create")}
-                >
+                <Button startIcon={<IoMdAdd />} variant="contained" size="large" onClick={() => navigate("/create")}>
                     Add new booking
                 </Button>
                 <Button startIcon={<IoMdAdd />} variant="contained" size="large" onClick={exportFile}>

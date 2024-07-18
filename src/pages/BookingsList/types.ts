@@ -10,4 +10,5 @@ export type Booking = {
     id: string;
     status?: string;
     sl_no?: string;
+    forced?: boolean;
 };

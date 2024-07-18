@@ -24,84 +24,43 @@ export const plants = [
 
 export const vehicles = [
     {
-        number: "KL-23423",
-        driver_name: "asdasd",
+        number: "KL-01-A-1234",
+        driver_name: "Rajesh Kumar",
     },
     {
-        number: "KL-231232",
-        driver_name: "asdasd",
+        number: "KL-02-B-5678",
+        driver_name: "Anil R",
     },
     {
-        number: "KL-234234",
-        driver_name: "asdasd",
+        number: "KL-03-C-9101",
+        driver_name: "Suresh Menon",
     },
     {
-        number: "KL-43535435",
-        driver_name: "asdasd",
+        number: "KL-04-D-1121",
+        driver_name: "Manoj Nair",
     },
     {
-        number: "KL-ff34",
-        driver_name: "asdasd",
+        number: "KL-05-E-3141",
+        driver_name: "Vinod Kumar",
     },
     {
-        number: "KL-6456",
-        driver_name: "asdasd",
+        number: "KL-06-F-5161",
+        driver_name: "Ravi Varma",
     },
     {
-        number: "KL-568678",
-        driver_name: "asdasd",
+        number: "KL-07-G-7181",
+        driver_name: "Ajith Kumar",
     },
     {
-        number: "KL-5643",
-        driver_name: "asdasd",
+        number: "KL-08-H-9202",
+        driver_name: "Murali Pillai",
     },
     {
-        number: "KL-56658678",
-        driver_name: "asdasd",
+        number: "KL-09-I-2232",
+        driver_name: "George Mathew",
     },
     {
-        number: "KL-6786786745",
-        driver_name: "asdasd",
-    },
-
-    {
-        number: "KL-ert456",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-678675675686745",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-567567",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-5867",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-567567",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-867867",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-67867",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-967575",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-4646456",
-        driver_name: "asdasd",
-    },
-    {
-        number: "KL-86774545",
-        driver_name: "asdasd",
+        number: "KL-10-J-3242",
+        driver_name: "Ramesh Babu",
     },
 ] as const;
