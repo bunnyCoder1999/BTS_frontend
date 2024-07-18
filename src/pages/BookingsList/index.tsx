@@ -35,7 +35,7 @@ const BookingList = () => {
     const [date, setDate] = useState(dayjs());
     const [isLoading, setIsLoading] = useState(false);
     const [filters, setFilters] = useState({
-        key: "" as keyof Booking,
+        key: "booking_id" as keyof Booking,
         query: "",
         vehicle: null as unknown as (typeof vehicles)[number],
     });
@@ -51,9 +51,11 @@ const BookingList = () => {
         setIsLoading(false);
     }, [date]);
 
+    const passKey = sessionStorage.getItem("pass_key");
+
     useEffect(() => {
         fetchBookings();
-    }, [fetchBookings]);
+    }, [fetchBookings, passKey]);
 
     const filteredBookings = useMemo(() => {
         const filterFn = (b: Booking) => {
