@@ -1,9 +1,66 @@
 import { GridColDef } from "@mui/x-data-grid";
 import { Booking } from "./types";
-import { IconButton } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField } from "@mui/material";
 import { MdDelete } from "react-icons/md";
+import { BiSolidCommentDetail } from "react-icons/bi";
+import { useState } from "react";
+import dayjs from "dayjs";
 
-export const columns: (onDelete: (b: Booking) => void, onEdit: (b: Booking) => void) => GridColDef<Booking>[] = (onDelete, onEdit) => [
+const Actions = ({ value, onAddComment, onDelete }) => {
+    const [open, setOpen] = useState(false);
+    const [comment, setComment] = useState(value.row.comment?.text || "");
+    return (
+        <div className="list_table_action">
+            <Dialog open={open} fullWidth maxWidth="xs" onClose={() => setOpen(false)}>
+                <DialogTitle variant="h5" fontWeight={700}>
+                    Add Comments
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Comment</DialogContentText>
+                    <TextField
+                        autoComplete="off"
+                        value={comment}
+                        onChange={e => setComment(e.target.value)}
+                        placeholder="Enter Comment"
+                        fullWidth
+                        margin="dense"
+                        type="password"
+                        multiline
+                        rows={10}
+                    />
+                    {value.row?.comment?.commented_on && (
+                        <div className="last_updated_on">Last updated on {dayjs(value.row?.comment?.commented_on).format("DD/MM/YY HH:mm A")}</div>
+                    )}
+                    <DialogActions sx={{ paddingBlock: "2rem 1rem", px: 0 }}>
+                        <Button
+                            variant="contained"
+                            color="info"
+                            size="large"
+                            onClick={async () => {
+                                await onAddComment(value.row, comment);
+                                setOpen(false);
+                            }}
+                        >
+                            Add Comment
+                        </Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
+            <IconButton onClick={() => onDelete(value.row)}>
+                <MdDelete fill="red" />
+            </IconButton>
+            <IconButton onClick={() => setOpen(true)}>
+                <BiSolidCommentDetail fill="white" />
+            </IconButton>
+        </div>
+    );
+};
+
+export const columns: (
+    onDelete: (b: Booking) => void,
+    onEdit: (b: Booking) => void,
+    onAddComment: (b: Booking, c: string) => void,
+) => GridColDef<Booking>[] = (onDelete, onEdit, onAddComment) => [
     {
         field: "sl_no",
         headerName: "Sl No",
@@ -38,15 +95,6 @@ export const columns: (onDelete: (b: Booking) => void, onEdit: (b: Booking) => v
         valueGetter: (value, row) => `${row.vehicle.number} ${row.forced ? "(F)" : ""}`,
     },
     {
-        field: "vehicle_name",
-        headerName: "Driver name",
-        flex: 1,
-        headerClassName: "list_table_header",
-        resizable: false,
-        disableColumnMenu: true,
-        valueGetter: (value, row) => row.vehicle.driver_name || "--",
-    },
-    {
         field: "status",
         headerName: "Status",
         headerClassName: "list_table_header",
@@ -69,13 +117,7 @@ export const columns: (onDelete: (b: Booking) => void, onEdit: (b: Booking) => v
         headerClassName: "list_table_header",
         resizable: false,
         disableColumnMenu: true,
-        width: 70,
-        renderCell: value => {
-            return (
-                <IconButton onClick={() => onDelete(value.row)}>
-                    <MdDelete fill="red" />
-                </IconButton>
-            );
-        },
+        width: 120,
+        renderCell: value => <Actions onAddComment={onAddComment} value={value} onDelete={onDelete} />,
     },
 ];

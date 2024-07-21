@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { Booking } from "./types";
 import { columns } from "./data";
 import { keys, plants, vehicles } from "../../constants";
-import { deleteBooking, editStatus, getBookings } from "../../services";
+import { addComment, deleteBooking, editStatus, getBookings } from "../../services";
 import ExcelJS from "exceljs";
 import { MdDelete } from "react-icons/md";
 import { useDebounce } from "../../utils";
@@ -152,6 +152,11 @@ const BookingList = () => {
         fetchBookings();
     };
 
+    const handleAddComment = async (booking: Booking, comment: string) => {
+        await addComment({ text: comment, commented_on: new Date() }, booking.booking_id);
+        fetchBookings();
+    };
+
     return (
         <div className="list_container">
             <Dialog open={!!deletingBooking} onClose={handleCloseModal}>
@@ -232,7 +237,7 @@ const BookingList = () => {
                     </h2>
                     <DataGrid
                         rows={filteredBookings[p.label]}
-                        columns={columns(setDeletingBooking, handleEditStatus)}
+                        columns={columns(setDeletingBooking, handleEditStatus, handleAddComment)}
                         disableRowSelectionOnClick
                         loading={isLoading}
                         sx={{

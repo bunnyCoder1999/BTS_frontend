@@ -29,6 +29,7 @@ function App() {
                         fullWidth
                         size="small"
                         margin="dense"
+                        type="password"
                     />
                     <DialogActions sx={{ paddingBlock: "2rem 1rem", px: 0 }}>
                         <Button variant="contained" color="info" size="large" onClick={handleVerifyKey}>

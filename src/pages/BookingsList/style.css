@@ -94,6 +94,21 @@
     background-color: currentColor;
 }
 
+.list_table_action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.last_updated_on {
+    color: white;
+    text-align: end;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
 @media (width<800px) {
     .list_container {
         grid-template-columns: 1fr;

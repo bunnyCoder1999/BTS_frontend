@@ -9,6 +9,7 @@
 -   Create booking
 -   Booking id should be unique
 -   Each vehicle can have only one booking per day unless created forcefully
+-   Add comment for each booking
 
 ## Built with
 

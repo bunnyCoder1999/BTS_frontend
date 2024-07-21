@@ -11,4 +11,5 @@ export type Booking = {
     status?: string;
     sl_no?: string;
     forced?: boolean;
+    comment?: { commented_on: Date | string; text: string };
 };
