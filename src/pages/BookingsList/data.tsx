@@ -40,6 +40,7 @@ const Actions = ({ value, onAddComment, onDelete }) => {
                                 await onAddComment(value.row, comment);
                                 setOpen(false);
                             }}
+                            disabled={!comment}
                         >
                             Add Comment
                         </Button>
@@ -60,7 +61,8 @@ export const columns: (
     onDelete: (b: Booking) => void,
     onEdit: (b: Booking) => void,
     onAddComment: (b: Booking, c: string) => void,
-) => GridColDef<Booking>[] = (onDelete, onEdit, onAddComment) => [
+    isStatusChanging: boolean,
+) => GridColDef<Booking>[] = (onDelete, onEdit, onAddComment, isStatusChanging) => [
     {
         field: "sl_no",
         headerName: "Sl No",
@@ -104,7 +106,11 @@ export const columns: (
         renderCell: value => {
             return (
                 <div className="status_container">
-                    <button className={"status" + " " + value.row.status?.replace(" ", "")} onClick={() => onEdit(value.row)}>
+                    <button
+                        className={"status" + " " + value.row.status?.replace(" ", "")}
+                        onClick={() => onEdit(value.row)}
+                        disabled={isStatusChanging}
+                    >
                         {value.row.status}
                     </button>
                 </div>
