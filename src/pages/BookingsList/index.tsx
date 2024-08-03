@@ -34,6 +34,7 @@ const BookingList = () => {
     const [isDeleteLoading, setIsDeleteLoading] = useState(false);
     const [date, setDate] = useState(dayjs());
     const [isLoading, setIsLoading] = useState(false);
+    const [isStatusChanging, setIsStatusChanging] = useState(false);
     const [filters, setFilters] = useState({
         key: "booking_id" as keyof Booking,
         query: "",
@@ -130,7 +131,7 @@ const BookingList = () => {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `data-${date.format("DD/MM/YYYY")}.xlsx`;
+            a.download = `bts-bookings-${date.format("DD-MM-YYYY")}.xlsx`;
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
@@ -148,8 +149,10 @@ const BookingList = () => {
     };
 
     const handleEditStatus = async (booking: Booking) => {
+        setIsStatusChanging(true);
         await editStatus(booking.status === "Pending" ? "Completed" : "Pending", booking.booking_id);
         fetchBookings();
+        setIsStatusChanging(false);
     };
 
     const handleAddComment = async (booking: Booking, comment: string) => {
@@ -166,7 +169,7 @@ const BookingList = () => {
                 <DialogContent>
                     <DialogContentText>Are you sure you want to delete the booking?</DialogContentText>
                     <DialogActions sx={{ justifyContent: "space-between", paddingBlock: "2rem 1rem", px: 0 }}>
-                        <Button variant="contained" size="large" onClick={handleCloseModal}>
+                        <Button variant="contained" size="large" onClick={handleCloseModal} disabled={isDeleteLoading}>
                             Cancel
                         </Button>
                         <Button
@@ -237,7 +240,7 @@ const BookingList = () => {
                     </h2>
                     <DataGrid
                         rows={filteredBookings[p.label]}
-                        columns={columns(setDeletingBooking, handleEditStatus, handleAddComment)}
+                        columns={columns(setDeletingBooking, handleEditStatus, handleAddComment, isStatusChanging)}
                         disableRowSelectionOnClick
                         loading={isLoading}
                         sx={{
